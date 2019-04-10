@@ -1,0 +1,16 @@
+{
+  "PAGES": {
+      "HOME": {
+          "TITLE": "L'application fonctionne !"
+      },
+
+      "CONNEXION": {
+          "TITLE": "CONNEXION",
+          "EMAIL": "Email",
+          "USER": "Utilisateur",
+          "PASS": "Mot de passe",
+          "VALIDATE": "Valider",
+          "REQUIRE": "champ requis"
+      }
+  }
+}

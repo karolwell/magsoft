@@ -1,0 +1,99 @@
+.connexion {
+  width: 100%;
+  height: 655px;
+  /*display: flex;*/
+  margin: 0% 0% 0% 0%;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  background-color: transparent;
+
+  /*background: url(../../../assets/background.jpg) no-repeat center fixed;*/
+  background: url(../../asset/magsoft.fw.png) no-repeat center center;
+  -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+  /* background-size: cover; version standardisée */
+
+}
+
+ .shadows{
+    margin-top:0%;
+    width: 100%;
+    height: 100%;
+    /*background-color: rgba(0, 0, 0, 0.1);*/
+   /* background: linear-gradient(90deg, rgba(2,0,36,0.3315301120448179) 0%, 
+                rgba(21,9,36,0.2811099439775911) 15%, rgba(30,41,43,0.6) 98%);*/
+    -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+    background-size: cover; /* version standardisée */
+    z-index: 1;
+  }
+
+  form {
+    width: auto;
+    height: auto;
+    margin: -7% 0% 0% 0%;
+    padding-top: 10%;
+    padding-left: 30%;
+    padding-right: 30%;
+  }
+
+  form:hover{
+    transform: scaleY(1.03);
+  }
+
+  .input {
+    background: transparent;
+    width: 100%;
+    height: 30px;
+    margin: 0% 0% 3% 0%;
+    border: solid 0px #FFF; 
+    border-bottom: solid 1px #777; 
+    padding: 0px;
+    color: #f6a124;
+    font-size: 16px;
+  }
+
+    .checkbox_{
+    background: transparent;
+    height: 30px;
+    padding: 2px;
+    margin-right:2px; 
+    color: #f6a124;
+    font-size: 16px;
+  }
+
+  .input:hover {
+    width: 100%;
+    height: 30px;
+    margin: 0% 0% 3% 0%;
+    /*border: solid 0px #777;*/ 
+    border-bottom: solid 1px #ff9800;
+    transition-delay: 0.7s;  
+  }
+
+
+  button[type="submit"], button[type="submit"]:hover  {
+    background: #f6a124;
+    border: solid 0px #ff9800;
+    margin-left: 7px;
+    padding:1% 0% 1% 0%;
+    font-weight: bold;
+    text-transform: uppercase; 
+    width: 100%;
+    height: auto;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 1px 2px 10px #CCC;
+    font-size:16px;
+  }
+
+  .title {
+    color: #BBB;
+    margin:0;
+    padding:50px 20px;
+  }
+
+  .error{
+    color:#fc631e;
+  }

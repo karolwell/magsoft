@@ -1,0 +1,34 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+# deal with magasin first
+RewriteCond %{REQUEST_URI} ^/magsoft/(magasin)
+RewriteRule ^magasin/dist/(.*)$ backend/web/dist/$1 [L]
+RewriteRule ^magasin/asset/(.*)$ backend/web/asset/$1 [L]
+RewriteRule ^magasin/assets/(.*)$ backend/web/assets/$1 [L]
+RewriteRule ^magasin/css/(.*)$ backend/web/css/$1 [L]
+RewriteRule ^magasin/js/(.*)$ backend/web/js/$1 [L]
+RewriteRule ^magasin/images/(.*)$ backend/web/images/$1 [L]
+RewriteRule ^magasin/fonts/(.*)$ backend/web/fonts/$1 [L]
+RewriteRule ^magasin/plugins/(.*)$ backend/web/plugins/$1 [L]
+
+RewriteCond %{REQUEST_URI} !^/magsoft/backend/web/(assets|css)/
+RewriteCond %{REQUEST_URI} ^/magsoft/(magasin)
+RewriteRule ^.*$ backend/web/index.php [L]
+
+
+RewriteCond %{REQUEST_URI} ^/magsoft/(assets|asset|css)
+RewriteRule ^asset/(.*)$ frontend/web/asset/$1 [L]
+RewriteRule ^assets/(.*)$ frontend/web/assets/$1 [L]
+RewriteRule ^css/(.*)$ frontend/web/css/$1 [L]
+RewriteRule ^fonts/(.*)$ frontend/web/fonts/$1 [L]
+RewriteRule ^js/(.*)$ frontend/web/js/$1 [L]
+RewriteRule ^images/(.*)$ frontend/web/images/$1 [L]
+RewriteRule ^themes/(.*)$ frontend/web/themes/$1 [L]
+RewriteRule ^apk/(.*)$ frontend/web/apk/$1 [L]
+
+RewriteCond %{REQUEST_URI} !^/magsoft/(frontend|backend)/web/(assets|asset|dist|css|js|images|fonts|plugins)/
+RewriteCond %{REQUEST_URI} !index.php
+RewriteCond %{REQUEST_FILENAME} !-f [OR]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ frontend/web/index.php
