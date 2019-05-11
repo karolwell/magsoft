@@ -3,8 +3,9 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Categorie;
-use common\models\CategorieSearch;
+use backend\models\Categorie;
+use backend\models\Produit;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -29,102 +30,190 @@ class CategorieController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        if (in_array($action->id, ['ajouter_categorie','activer_desactiver','produits','supprimer'])) {
+            $this->enableCsrfValidation = false;
+        }
+        return parent::beforeAction($action);
+    }
+    
+
     /**
-     * Lists all Categorie models.
+     * Lists all Categories models.
      * @return mixed
      */
     public function actionIndex()
     {
+       $categorie = new Categorie();
+       $categories = $categorie->find()->where('statut<>0')->all();
 
-      if (\Yii::$app->user->isGuest) {
-        return $this->redirect(['site/login']);
-    }
-
-    $searchModel = new CategorieSearch();
-    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-    return $this->render('index', [
-        'searchModel' => $searchModel,
-        'dataProvider' => $dataProvider,
+       return $this->render('index', [
+        'categories' => $categories,
+        'categorie' => $categorie,
     ]);
-}
+   }
 
     /**
      * Displays a single Categorie model.
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionProduits()
     {
-      if (\Yii::$app->user->isGuest) {
-        return $this->redirect(['site/login']);
-    }
+        $produit = new Produit();
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post()['categorie'];
+            $produits = Produit::find()->where(['id_categorie'=>(int)$id])->andWhere('statut<>0')->all();
 
-    return $this->render('view', [
-        'model' => $this->findModel($id),
-    ]);
-}
+            $this->layout = false;
+            return $this->render('view', [
+                'produits' => $produits,
+            ]);
+        }
+
+    }
 
     /**
      * Creates a new Categorie model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionAjouter_categorie()
     {
-      if (\Yii::$app->user->isGuest) {
-        return $this->redirect(['site/login']);
-    }
+        $categorie = new Categorie();
+        if(Yii::$app->request->isAjax){
+            $params = Yii::$app->request->post()['categorie'];
+            if($params['id']!=0){
+                $categorie = Categorie::find()->where(['id'=>(int)$params['id']])->one();
+            } 
+            //exit;
+            if(!empty($params['designation'])){
+                foreach ($categorie as $key => $value) {
 
-    $model = new Categorie();
+                    if(isset($params[$key])){
+                        $categorie->$key=$params[$key];
+                    }
 
-       //Yii::$app->session->setFlash('info', 'Veuillez remplir dumment le formulaire');
+                }
 
-    if ($model->load(Yii::$app->request->post())) {
-        $model->date = @date('Y-m-d H:m:i');
 
-        $categorie = Yii::$app->request->post()['Categorie'];
-        $libelle=$categorie['libelle'];
-        $exist = $model->findOne(['libelle'=>$libelle]);
+                if($categorie->id){
+                    $categorie->date_update = date('Y-m-d H:i:s');
+                    $categorie->update_by = Yii::$app->user->identity->id;
+                    if($categorie->save()){
+                        $data = [
+                            'state'=>'ok',
+                            'message'=>'Menu modifié avec succès',
+                        ] ;
+                    }else{
+                        $data = [
+                            'state'=>'ko',
+                            'message'=>'Echec de modification du menu',
+                        //'results'=>$menu->getErrors(),
+                        ] ;
+                    }
 
-        if (sizeof($exist)==0) {
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Categorie bien enrégistrée');
-            //return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                Yii::$app->session->setFlash('error', 'Categorie non enrégistrée'); 
+                }else{
+                    $exist = Categorie::find()->where(['designation'=>$categorie->designation])->one();
+                    if($exist && $exist->statut==0){
+                        $exist->statut = 1;
+                        $categorie->date_update = date('Y-m-d H:i:s');
+                        $categorie->update_by = Yii::$app->user->identity->id;
+                        if($exist->save()){
+                            $data = [
+                                'state'=>'ok',
+                                'message'=>'Catégorie enrégistré avec succès',
+                            ] ;
+                        }else{
+                            $data = [
+                                'state'=>'ko',
+                                'message'=>'Echec d\'enrégistrement de la Catégorie',
+                            //'results'=>$menu->getErrors(),
+                            ] ;
+                        }
+                    }else{
+                        $categorie->date_create = date('Y-m-d H:i:s');
+                        $categorie->create_by = Yii::$app->user->identity->id;
+                       if($categorie->save()){
+                        $data = [
+                            'state'=>'ok',
+                            'message'=>'Catégorie enrégistré avec succès',
+                        ] ;
+                    }else{
+                        $data = [
+                            'state'=>'ko',
+                            'message'=>'Echec d\'enrégistrement de la Catégorie',
+                            //'results'=>$menu->getErrors(),
+                        ] ;
+                    }
+
+                }
+
             }
-        }else {
-            Yii::$app->session->setFlash('error', 'Categorie non enrégistrée'); 
+
+        }else{
+            $data = [
+                'state'=>'ko',
+                'message'=>'Veuillez renseigner le formulaire s\'il vous plait',
+            ] ;
         }
+
+        $class = $data['state']=='ok'? 'success':'error';
+        $message = $data['message'];
+
+        Yii::$app->getSession()->setFlash($class,$message);
+
+        return json_encode($data);
+
     }
 
-    return $this->render('create', [
-        'model' => $model,
-    ]);
 }
 
+
     /**
-     * Updates an existing Categorie model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * Deletes an existing Categorie model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionActiver_desactiver()
     {
-      if (\Yii::$app->user->isGuest) {
-        return $this->redirect(['site/login']);
-    }
+        $categorie = new Categorie();
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post()['id'];
+            $operation = Yii::$app->request->post()['operation'];
+            $categorie = Categorie::find()->where(['id'=>(int)$id])->one();
+            if($operation == 2){
 
-    $model = $this->findModel($id);
+                $categorie->statut = 1;
+                $msg = 'Catégorie activé avec succès';
 
-    if ($model->load(Yii::$app->request->post()) && $model->save()) {
-        return $this->redirect(['view', 'id' => $model->id]);
-    } else {
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
+            }elseif($operation == 1){
+
+                $categorie->statut = 2;
+                $msg = 'Catégorie désactivé avec succès';
+            }
+
+            if($categorie->save()){
+                $data = [
+                    'state' => 'ok',
+                    'message' => $msg,
+                ];
+            }else{
+             $data = [
+                'state' => 'ko',
+                'message' => 'Echec de l\'opération sur cette Catégorie',
+                //'error' => $menu->getErrors(),
+            ];
+        }
+        $class = $data['state']=='ok'? 'success':'error';
+        $message = $data['message'];
+
+        Yii::$app->getSession()->setFlash($class,$message);
+
+        return json_encode($data);
+    } 
 }
 
     /**
@@ -133,22 +222,41 @@ class CategorieController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionSupprimer()
     {
-      if (\Yii::$app->user->isGuest) {
-        return $this->redirect(['site/login']);
-    }
-    
-    $this->findModel($id)->delete();
+        $categorie = new Categorie();
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post()['id'];
+            $categorie = Categorie::find()->where(['id'=>(int)$id])->one();
 
-    return $this->redirect(['index']);
+            $categorie->statut = 0;
+
+            if($categorie->save()){
+                $data = [
+                    'state' => 'ok',
+                    'message' => 'Catégorie supprimer avec succès',
+                ];
+            }else{
+               $data = [
+                'state' => 'ko',
+                'message' => 'Echec de suppression de cette Catégorie',
+                'error' => $categorie->getErrors(),
+            ];
+        }
+        $class = $data['state']=='ok'? 'success':'error';
+        $message = $data['message'];
+
+        Yii::$app->getSession()->setFlash($class,$message);
+
+        return json_encode($data);
+    } 
 }
 
     /**
-     * Finds the Categorie model based on its primary key value.
+     * Finds the Menu model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Categorie the loaded model
+     * @return Menu the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)

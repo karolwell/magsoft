@@ -4,8 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
-use kartik\widgets\FileInput;
-use kartik\widgets\Select2;
+//use kartik\widgets\FileInput;
 use yii\widgets\Pjax;
 use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
@@ -166,7 +165,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 </script>
 
-<?= $this->render('../modal'); ?>
+<?= $this->render('../dialogue'); ?>
 <div class="container-fluid">
     <div id="page" class="page-title">
         <h4>

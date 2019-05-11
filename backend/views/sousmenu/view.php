@@ -1,40 +1,41 @@
-<?php
+<table class="table table-sm table-hover table-stripped table-condensed">
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\SousMenu */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Sous Menus', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="sous-menu-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'libelle',
-            'lien',
-            'description:ntext',
-            'menuId',
-            'status',
-        ],
-    ]) ?>
-
-</div>
+    <tr>
+        <th>Menu</th><td><?= $sousmenu->menu->libelle  ?></td>
+    </tr>
+    <tr>
+        <th>Libelle</th><td><?= $sousmenu->libelle  ?></td>
+    </tr>
+    <tr>
+        <th>Lien</th><td><?= $sousmenu->lien  ?></td>
+    </tr>
+    <tr>
+        <th>Description</th><td><?= $sousmenu->description  ?></td>
+    </tr>
+    <tr>
+        <th class="mrg-top-5">Visible</th>
+        <td>
+            <div class="mrg-top">
+                <span>
+                    <div class="toggle-checkbox toggle-primary checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
+                        <input id="status_<?= $sousmenu->id ?>" type="checkbox" name="toggle5"  <?= $sousmenu->statut == 1?'checked':'' ?> value="<?= $sousmenu->statut ?>" disabled>
+                        <label for="status_<?= $sousmenu->id ?>"></label>
+                    </div>
+                </span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th class="mrg-top-5">Statut</th>
+        <td>
+            <div class="mrg-top">
+                <span>
+                    <div class="toggle-checkbox toggle-warning checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
+                        <input id="status_<?= $sousmenu->id ?>" type="checkbox" name="toggle5"  <?= $sousmenu->statut == 1?'checked':'' ?> value="<?= $sousmenu->statut ?>" disabled>
+                        <label for="status_<?= $sousmenu->id ?>"></label>
+                    </div>
+                </span>
+            </div>
+        </td>
+    </tr>
+</table>

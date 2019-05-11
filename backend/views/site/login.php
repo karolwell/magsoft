@@ -20,7 +20,7 @@ $form = ActiveForm::begin();
         
         <form action="" method="post" name="_csrf" class="sky-form boxed">
             <input type="hidden" name="_csrf" value="TlNpc3kuVVF3NScxEgMNMx1gPDEhGWw7GD4uQQ1rNxAIKkRFTHw7Ig==">
-            <h2 style="color: #AAA; margin-bottom: 5%;"><i class="fa fa-users"></i> Connectez-vous !</h2>
+            <h2 style="color: #AAA; margin-bottom: 5%; text-align: center"><i class="fa fa-users"></i> Connectez-vous !</h2>
 
 
                             <?= $form->field($model, 'username')->textInput(['placeholder'=>'Utilisateur','class'=>'input'])->Label(false); ?>
@@ -29,7 +29,9 @@ $form = ActiveForm::begin();
                             <i class="icon-append fa fa-lock"></i>
                             <?= $form->field($model, 'password')->passwordInput(['placeholder'=>'Mot de passe','class'=>'input'])->Label(false); ?>
                        
-                        <label style="color: #AAA;" class="checkbox_"><input name="rememberMe" type="checkbox" name="checkbox-inline" checked><i></i> <span style="margin-right: 5px;">Restez connecter</span> </label>
+                            <div class="checkbox" style="color:#777777; margin-left: 22px;">
+                            <input class="pull-left" name="rememberMe" type="checkbox" name="checkbox-inline" checked><i></i> <span style="margin-right: 5px;">Restez connecter</span> 
+                            </div>
 
 
                 <footer class="text-center">

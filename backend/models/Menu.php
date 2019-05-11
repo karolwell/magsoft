@@ -11,6 +11,7 @@ use Yii;
  * @property string $libelle
  * @property string $lien
  * @property string $description
+ * @property integer $position
  * @property integer $statut
  * @property string $date
  *
@@ -34,7 +35,7 @@ class Menu extends \yii\db\ActiveRecord
         return [
             [['libelle'], 'required'],
             [['description'], 'string'],
-            [['statut'], 'integer'],
+            [['position','statut'], 'integer'],
             [['date'], 'safe'],
             [['libelle'], 'string', 'max' => 100],
             [['lien'], 'string', 'max' => 255],
@@ -51,6 +52,7 @@ class Menu extends \yii\db\ActiveRecord
             'libelle' => 'Libelle',
             'lien' => 'Lien',
             'description' => 'Description',
+            'position' => 'Position',
             'statut' => 'Statut',
             'date' => 'Date',
         ];

@@ -34,7 +34,7 @@ class SousmenuController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['ajouter_sousmenu','activer_desactiver','supprimer','visibiliter'])) {
+        if (in_array($action->id, ['ajouter_sousmenu','details','activer_desactiver','supprimer','visibiliter'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
@@ -52,7 +52,7 @@ class SousmenuController extends Controller
 
         $sousmenu = new SousMenu();
         $sousmenus = $sousmenu->find()->where('statut<>0')->all();
-        $menus = Menu::find()->where('statut<>0')->all();
+        $menus = Menu::find()->where('statut<>0')->orderby('position DESC')->all();
 
         $allActions = Common::getAllcontrolleractions();
 
@@ -65,15 +65,23 @@ class SousmenuController extends Controller
     }
 
     /**
-     * Displays a single SousMenu model.
+     * Displays a single User model.
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionDetails()
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $sousmenu = new SousMenu();
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post()['sousmenu'];
+            $sousmenu = SousMenu::find()->where(['id'=>(int)$id])->one();
+
+            $this->layout = false;
+            return $this->render('view', [
+                'sousmenu' => $sousmenu,
+            ]);
+        }
+
     }
 
     /**

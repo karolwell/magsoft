@@ -1,40 +1,47 @@
-<?php
+<?php if ($sousmenus): ?>
+<table class="table table-sm table-hover table-stripped table-condensed">
+    <thead>
+        <th>Libelle</th>
+        <th>Lien</th>
+        <th>Description</th>
+        <th>Visible</th>
+        <th>sataut</th>
+    </thead>
+        
+    <?php foreach ($sousmenus as $key => $sousmenu): ?>
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
+        <tr>
+            <td><?= $sousmenu->libelle  ?></td>
+            <td><?= $sousmenu->lien  ?></td>
+            <td><?= $sousmenu->description  ?></td>
+            <td>
+                <div class="mrg-top">
+                    <span>
+                        <div class="toggle-checkbox toggle-primary checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
+                            <input id="status_<?= $sousmenu->id ?>" type="checkbox" name="toggle5"  <?= $sousmenu->visible == 1?'checked':'' ?> value="<?= $sousmenu->visible ?>" disabled>
+                            <label for="status_<?= $sousmenu->id ?>"></label>
+                        </div>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="mrg-top">
+                    <span>
+                        <div class="toggle-checkbox toggle-warning checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
+                            <input id="status_<?= $sousmenu->id ?>" type="checkbox" name="toggle5"  <?= $sousmenu->statut == 1?'checked':'' ?> value="<?= $sousmenu->statut ?>" disabled>
+                            <label for="status_<?= $sousmenu->id ?>"></label>
+                        </div>
+                    </span>
+                </div>
+            </td>
+        </tr>
+        
+    <?php endforeach ?>
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\Menu */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Menus', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="menu-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'libelle',
-            'lien',
-            'description:ntext',
-            'statut',
-            'date',
-        ],
-    ]) ?>
-
+</table>
+<?php else: ?>
+<div id="w1-success" class="alert-danger alert fade in">
+<!-- <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> -->
+    Aucun sous menu pour ce menu.
 </div>
+<?php endif ?>

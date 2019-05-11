@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 </script>
 
-<?= $this->render('../modal'); ?>
+<?= $this->render('../dialogue'); ?>
 <div class="container-fluid">
     <div id="page" class="page-title">
         <h4>

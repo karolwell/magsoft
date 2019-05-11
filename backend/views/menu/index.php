@@ -19,6 +19,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script type="text/javascript">
 
+    function checkAll(){
+
+        if ($("#task").is(':checked')) {
+            $("._task").prop("checked", true);
+            $("._subtask").prop("checked", true);
+        } else {
+            $("._task").prop("checked", false);
+            $("._subtask").prop("checked", false);
+        }
+        //alert(state);
+    }
+
+    function checkSubtasks(){
+        if ($("._task").is(':checked')) {
+            $("#task").prop("checked", true);
+        } else {
+            $("#task").prop("checked", false);
+        }
+    }
+
     function doitMass(op){
         if(op == "supp"){
             var titre = "Suppression";
@@ -36,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         }
         var datas = [];
-         $('#titre').html(titre);            
+        $('#titre').html(titre);            
         $('#message').html(msg);  
         $('#type_operation').val(0);        
         $('#action').val(action);
@@ -155,9 +175,34 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#description').val(inputs[3]);
         addmenuShow();
     }
+
+    function details(id){
+        $('#modal-lg').addClass('card-refresh');
+        $('#content').html(' ');
+        $('#detail-titre').html('Sous menus');
+
+        var url = "<?php echo Yii::$app->homeUrl ?>menu/details";
+
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: {
+            menu: id,
+        },
+        success: function (data) {
+
+            $('#modal-lg').removeClass('card-refresh');
+            $('#content').html(data);
+
+
+        }
+    });
+
+    }
 </script>
 
-<?= $this->render('../modal'); ?>
+<?= $this->render('../dialogue'); ?>
+<?= $this->render('../details'); ?>
 
 <div class="container-fluid">
     <div id="page" class="page-title">
@@ -192,82 +237,98 @@ $this->params['breadcrumbs'][] = $this->title;
                     </select>
                 </div>
             </div>
-      <div class="col-sm-5">      
-        <?= $form->field($menu, 'description')->textInput(['placeholder'=>'Description','id'=>'description'])->label('Description')->error(false) ?>
+            <div class="col-sm-4">      
+                <?= $form->field($menu, 'description')->textInput(['placeholder'=>'Description','id'=>'description'])->label('Description')->error(false) ?>
+            </div>
+            <div class="col-md-1">
+                <div class="mrg-top-0">
+                    <label>Position</label>
+                    <select id="selectize-dropdown" placeholder="Position ...">
+                        <option id="select" value="" disabled selected></option>
+                        <?php foreach ($positions as $position): ?>
+                            <option value="<?= $position ?>"><?= $position ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-1 form-group dropdown inline-block" style="margin-top: 2.2%;">     
+                <?= Html::Button('<i class="fa fa-check"></i>', ['class' => 'btn btn-warning no-mrg-btm', 'name' => 'ass-button', 'onclick'=>'addMenu(0);']) ?>
+            </div>
+        </div>
+        <?php ActiveForm::end(); ?>
     </div>
-    <div class="col-sm-1 form-group dropdown inline-block" style="margin-top: 2.2%;">     
-        <?= Html::Button('<i class="fa fa-check"></i>', ['class' => 'btn btn-warning no-mrg-btm', 'name' => 'ass-button', 'onclick'=>'addMenu(0);']) ?>
-    </div>
-</div>
-<?php ActiveForm::end(); ?>
-</div>
 
-<div class="row">
-    <div class="col-md-12">
-        <div id="datas" class="card">
-            <div class="card-block">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="datas" class="card">
+                <div class="card-block">
 
-                <div class="table-overflow">
+                    <div class="table-overflow">
 
-                    <?php Pjax::begin(); ?>
-                    <table id="dt-opt" class="table table-sm table-hover table-stripped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div class="checkbox mrg-left-20">
-                                        <input id="task" name="task" type="checkbox">
-                                        <label for="task"></label>
-                                    </div>
-                                </th>
-                                <th><div class="mrg-btm-15">Libelle</div></th>
-                                <th><div class="mrg-btm-15">Lien</div></th>
-                                <th><div class="mrg-btm-15">Description</div></th>
-                                <th><div class="mrg-btm-15">Statut</div></th>
-                                <th><div class="mrg-btm-15">Actions</div></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if ($menus): ?>
+                        <?php Pjax::begin(); ?>
+                        <table id="dt-opt" class="table table-sm table-hover table-stripped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="checkbox mrg-left-20">
+                                            <input id="task" name="task" type="checkbox" onclick="checkAll()">
+                                            <label for="task"></label>
+                                        </div>
+                                    </th>
+                                    <th><div class="mrg-btm-15">Libelle</div></th>
+                                    <th><div class="mrg-btm-15">Lien</div></th>
+                                    <th><div class="mrg-btm-15">Description</div></th>
+                                    <th><div class="mrg-btm-15">Statut</div></th>
+                                    <th><div class="mrg-btm-15">Actions</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if ($menus): ?>
 
-                                <?php foreach ($menus as $menu): ?>
-                                    <tr id="menu_<?= $menu->id ?>">
-                                        <td>
-                                            <div class="checkbox mrg-left-20">
-                                                <input id="task_<?= $menu->id ?>" name="task[]" type="checkbox">
-                                                <label for="task_<?= $menu->id ?>"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="mrg-top-15">
-                                                <span><?= $menu->libelle ?></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="mrg-top-15">
-                                                <!-- <span><?= Yii::$app->homeUrl.$menu->lien ?></span> -->
-                                                <span><?= $menu->lien ?></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="mrg-top-15">
-                                                <span><?= $menu->description ?></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="mrg-top-15" data-toggle="modal" data-target="#default-modal" title="" onclick="doIt('act','<?= $menu->id ?>','<?= $menu->statut ?>')">
-                                                <span>
-                                                    <div class="toggle-checkbox toggle-warning checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
-                                                        <input id="statut_<?= $menu->id ?>" type="checkbox" name="toggle5"  <?= $menu->statut == 1?'checked':'' ?> value="<?= $menu->statut ?>" disabled>
-                                                        <label for="statut_<?= $menu->id ?>"></label>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="mrg-top-20 text-center font-size-18">
-                                                <a href="#" title="Modifier" onclick="modifmenuShow('<?= $menu->id."*".str_replace(" ", "\'", $menu->libelle)."*".$menu->lien."*".str_replace("'", "\'", $menu->description) ?>')" ><span class="icon-holder"><i class="ti-pencil"></i></span></a>
-                                                <a href="#" data-toggle="modal" data-target="#default-modal" title="Supprimer" onclick="doIt('supp','<?= $menu->id ?>','<?= $menu->id ?>')"><span class="icon-holder"><i class="ti-trash"></i></span></a>
-                                                <a href="#" title="Sous menus"><span class="icon-holder"><i class="ti-view-list"></i></span></a>
+                                    <?php foreach ($menus as $menu): ?>
+                                        <tr id="menu_<?= $menu->id ?>">
+                                            <td>
+                                                <div class="checkbox mrg-left-20">
+                                                    <input id="task_<?= $menu->id ?>" class="_task" id="task_<?= $menu->id ?>" name="task[]" type="checkbox" value="<?= $menu->id ?>" onclick="checkSubtasks()">
+                                                    <label for="task_<?= $menu->id ?>"></label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mrg-top-15">
+                                                    <span><?= $menu->libelle ?></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mrg-top-15">
+                                                    <!-- <span><?= Yii::$app->homeUrl.$menu->lien ?></span> -->
+                                                    <span><?= $menu->lien ?></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mrg-top-15">
+                                                    <span><?= $menu->description ?></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mrg-top-15">
+                                                    <span><?= $menu->position ?></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mrg-top-15" data-toggle="modal" data-target="#default-modal" title="" onclick="doIt('act','<?= $menu->id ?>','<?= $menu->statut ?>')">
+                                                    <span>
+                                                        <div class="toggle-checkbox toggle-warning checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
+                                                            <input id="statut_<?= $menu->id ?>" type="checkbox" name="toggle5"  <?= $menu->statut == 1?'checked':'' ?> value="<?= $menu->statut ?>" disabled>
+                                                            <label for="statut_<?= $menu->id ?>"></label>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mrg-top-20 text-center font-size-18">
+                                                    <a href="#" title="Modifier" onclick="modifmenuShow('<?= $menu->id."*".str_replace(" ", "\'", $menu->libelle)."*".$menu->lien."*".str_replace("'", "\'", $menu->description) ?>')" ><span class="icon-holder"><i class="ti-pencil"></i></span></a>
+                                                    <a href="#" data-toggle="modal" data-target="#default-modal" title="Supprimer" onclick="doIt('supp','<?= $menu->id ?>','<?= $menu->id ?>')"><span class="icon-holder"><i class="ti-trash"></i></span></a>
+                                                    <a href="#" data-toggle="modal" data-target="#modal-lg" title="Sous menus" onclick="details('<?= $menu->id ?>')"><span class="icon-holder"><i class="ti-view-list"></i></span></a>
                                                     <!-- <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
                                                         <i class="ti-more-alt"></i>
                                                     </button> -->

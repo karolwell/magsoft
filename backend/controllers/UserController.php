@@ -33,7 +33,7 @@ class UserController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['ajouter_utilisateur','activer_desactiver','supprimer'])) {
+        if (in_array($action->id, ['ajouter_utilisateur','activer_desactiver','supprimer','details'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
@@ -65,11 +65,19 @@ class UserController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionDetails()
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $user = new User();
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post()['user'];
+            $user = User::find()->where(['id'=>(int)$id])->one();
+
+            $this->layout = false;
+            return $this->render('view', [
+                'user' => $user,
+            ]);
+        }
+
     }
 
  /**
@@ -94,7 +102,10 @@ class UserController extends Controller
 
 
                 if($user->id){
-
+                    if(!empty($user->password)){ 
+                        $user->password_hash = (string)Yii::$app->security->generatePasswordHash(trim($user->password));
+                    }
+                    $user->updated_at = time();
                     if($user->save()){
                         $data = [
                             'state'=>'ok',
@@ -128,7 +139,7 @@ class UserController extends Controller
                        $user->auth_key = Yii::$app->security->generateRandomString(32);
                        $user->password_hash = (string)Yii::$app->security->generatePasswordHash(trim($user->password));
                        $user->created_at = time();
-                       $user->updated_at = time();
+
                        if($user->password == $user->password_confirm){
                            if($user->save()){
                             $data = [

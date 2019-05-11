@@ -3616,3 +3616,18 @@ glyphs.character-mapping { margin: 0 0 20px 0; padding: 20px 0 20px 30px; color:
 .list-label > li { height: 2px; width: 40px; background: #fafafa; border-radius: 50px; display: inline-block; margin-right: 5px; }
 
 .draggable-item { cursor: move; cursor: grab; cursor: -moz-grab; cursor: -webkit-grab; }
+
+/*********************************************************************************************************************************/
+
+  .flow {
+    overflow-y: scroll; 
+    height: 300px;
+  }
+
+    .grise {
+    background-color: #ffe8c1;
+  }
+
+  .grise:hover{
+  	color: #ccc;
+  }

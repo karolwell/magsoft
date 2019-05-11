@@ -159,9 +159,34 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#selectize-group').val(inputs[4]);
         adduserShow();
     }
+
+    function details(id){
+        $('#modal-lg').addClass('card-refresh');
+        $('#content').html(' ');
+        $('#detail-titre').html('Détails');
+
+        var url = "<?php echo Yii::$app->homeUrl ?>user/details";
+
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: {
+            user: id,
+        },
+        success: function (data) {
+
+            $('#modal-lg').removeClass('card-refresh');
+            $('#content').html(data);
+
+
+         }
+        });
+
+    }
 </script>
 
-<?= $this->render('../modal'); ?>
+<?= $this->render('../dialogue'); ?>
+<?= $this->render('../details'); ?>
 
 <div class="container-fluid">
     <div id="page" class="page-title">
@@ -280,8 +305,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td>
                                                 <div class="mrg-top-20  font-size-18">
                                                     <a href="#" title="Modifier" onclick="modifuserShow('<?= $user->id."*".str_replace(" ", "\'", $user->username)."*".$user->telephone."*".str_replace("'", "\'", $user->email."*".$user->profileId) ?>')" ><span class="icon-holder"><i class="ti-pencil"></i></span></a>
-                                                    <a href="#" data-toggle="modal" data-target="#default-modal" title="Supprimer" onclick="doIt('supp','<?= $user->id ?>','<?= $user->id ?>')"><span class="icon-holder"><i class="ti-trash"></i></span></a>
-                                                    <a href="#" title="Détails"><span class="icon-holder"><i class="ti-view-list"></i></span></a>
+                                                    <a href="#" data-toggle="modal" data-target="#default-modal" title="Supprimer" onclick="doIt('supp','<?= $user->id ?>','<?= $user->status ?>')"><span class="icon-holder"><i class="ti-trash"></i></span></a>
+                                                    <a href="#" data-toggle="modal" data-target="#modal-lg" title="Détails" onclick="details('<?= $user->id ?>')"><span class="icon-holder"><i class="ti-view-list"></i></span></a>
                                                     <!-- <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
                                                         <i class="ti-more-alt"></i>
                                                     </button> -->

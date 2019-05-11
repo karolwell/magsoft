@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="pull-left" id="titre">Modal Template</h4>
+                <h4 class="pull-left" id="titre"></h4>
                  <button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body" id="default_modal_body">

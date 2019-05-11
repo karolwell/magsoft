@@ -1,44 +1,28 @@
-<?php
+<table class="table table-sm table-hover table-stripped table-condensed">
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\User */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="user-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'username',
-            'auth_key',
-            'password_hash',
-            'password_reset_token',
-            'email:email',
-            'role',
-            'status',
-            'created_at',
-            'updated_at',
-        ],
-    ]) ?>
-
-</div>
+    <tr>
+        <th>Nom utilisateur</th><td><?= $user->username  ?></td>
+    </tr>
+    <tr>
+        <th>Téléphone</th><td><?= $user->telephone  ?></td>
+    </tr>
+    <tr>
+        <th>Email</th><td><?= $user->email  ?></td>
+    </tr>
+    <tr>
+        <th>Profile</th><td><?= (isset($user->profile->designation))?$user->profile->designation:'';  ?></td>
+    </tr>
+    <tr>
+        <th class="mrg-top-5">Statut</th>
+        <td>
+            <div class="mrg-top">
+                <span>
+                    <div class="toggle-checkbox toggle-warning checkbox-inline toggle-sm mrg-top-10 mrg-left-0">
+                        <input id="status_<?= $user->id ?>" type="checkbox" name="toggle5"  <?= $user->status == 10?'checked':'' ?> value="<?= $user->status ?>" disabled>
+                        <label for="status_<?= $user->id ?>"></label>
+                    </div>
+                </span>
+            </div>
+        </td>
+    </tr>
+</table>

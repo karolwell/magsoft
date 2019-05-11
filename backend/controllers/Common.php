@@ -70,7 +70,7 @@ class Common {
 	public static function getmenus($user){
 		$menu = new Menu();
 		$user = User::find()->where(['id'=> $user])->one();
-		$menus = Menu::find()->where('statut<>0')->all();
+		$menus = Menu::find()->where('statut<>0')->orderby('position')->all();
 		$droits = [];
 		if($user->profile->droit){    
 			$droit = json_decode($user->profile->droit);
