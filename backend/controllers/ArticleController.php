@@ -18,6 +18,7 @@ class ArticleController extends Controller
     /**
      * @inheritdoc
      */
+    $i=0;
     public function behaviors()
     {
         return [
